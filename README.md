@@ -1,7 +1,5 @@
 # SOHO Network Design & Implementation
 
-**Enterprise Network Project**
-
 ---
 
 ## 1. Case Study
