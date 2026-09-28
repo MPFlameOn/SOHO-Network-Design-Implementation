@@ -47,7 +47,7 @@ XYZ company is a fast-growing company in Eastern Australia with more than 2 mill
 
 ## 5. IP Addressing Plan
 
-Base network: `192.168.1.0/24`, subnetted into three `/26` blocks (2 borrowed bits → 4 subnets of 64 hosts each, 3 used).
+Base network: `192.168.1.0/24`, subnetted into three `/26` blocks (2 borrowed bits → 4 subnets of 64 addresses (62 usable) each, 3 used).
 
 | Department | VLAN | Subnet | Usable Range | Gateway (Router subinterface) | Broadcast |
 |---|---|---|---|---|---|
@@ -204,7 +204,7 @@ while remaining logically separated by VLAN.
 | 6 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.2-62, gateway .1 | Success |
 | 7 | Wireless DHCP lease | Laptop1 (Finance) | not applicable | Address in 192.168.1.66-126, gateway .65 | Success |
 | 8 | Wireless DHCP lease | Tablet PC0 (CS) | not applicable | Address in 192.168.1.130-190, gateway .129 | Success |
-| 9 | Wireless-to-wired ping (same VLAN) | Tablet PC0 (CS) | PC2 or Printer2 | Success | Success |
+| 9 | Wireless-to-wired ping (same VLAN) | Tablet PC0 (CS) | PC2 | Success | Success |
 | 10 | Wireless-to-wired ping (cross-VLAN) | Laptop1 (Finance) | PC0 (Admin) | Success | Success |
 | 11 | Wireless-to-wireless ping (cross-VLAN) | Smartphone0 (Admin) | Tablet PC0 (CS) | Success | Success |
 | 12 | Cross-VLAN traceroute | PC0 (Admin) | PC2 (CS) | Path routes through 192.168.1.1 | Success |
