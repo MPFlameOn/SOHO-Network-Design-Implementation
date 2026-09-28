@@ -205,7 +205,7 @@ while remaining logically separated by VLAN.
 | 5 | Cross-VLAN ping | PC0 (Admin) | PC2 (CS) | Success | Success |
 | 6 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.2-62, gateway .1 | Success |
 | 7 | Wireless DHCP lease | Laptop1 (Finance) | not applicable | Address in 192.168.1.66-126, gateway .65 | Success |
-| 8 | Wireless-to-wired ping | Tablet PC0 (CS) | not applicable | Address in 192.168.1.130-190, gateway .129 | Success |
+| 8 | Wireless DHCP lease | Tablet PC0 (CS) | not applicable | Address in 192.168.1.130-190, gateway .129 | Success |
 | 9 | Wireless-to-wired ping (same VLAN) | Tablet PC0 (CS) | PC2 or Printer2 | Success | Success |
 | 10 | Wireless-to-wired ping (cross-VLAN) | Laptop1 (Finance) | PC0 (Admin) | Success | Success |
 | 11 | Wireless-to-wireless ping (cross-VLAN) | Smartphone0 (Admin) | Tablet PC0 (CS) | Success | Success |
