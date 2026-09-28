@@ -39,7 +39,7 @@ XYZ company is a fast-growing company in Eastern Australia with more than 2 mill
 | Device | Role |
 |---|---|
 | Router0 | Router-on-a-stick, DHCP server |
-| Switch (multilayer/L2) | VLAN trunking, access ports |
+| Switch | VLAN trunking, access ports |
 | Access Point 0/1/2 | Wireless per department |
 | PC0, PC1, PC2 | Wired department hosts |
 | Printer0/1/2 | Department printers |
@@ -203,41 +203,11 @@ while remaining logically separated by VLAN.
 | 3 | Cross-VLAN ping | PC0 (Admin) | PC1 (Finance) | Success (via router-on-a-stick) | Success |
 | 4 | Cross-VLAN ping | PC2 (CS) | PC1 (Finance) | Success | Success |
 | 5 | Cross-VLAN ping | PC0 (Admin) | PC2 (CS) | Success | Success |
-| 6 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.2-62, gateway .1 | |
-| 7 | Wireless DHCP lease | Laptop1 (Finance) | not applicable | Address in 192.168.1.66-126, gateway .65 | |
-| 8 | Wireless-to-wired ping | Tablet PC0 (CS) | not applicable | Address in 192.168.1.130-190, gateway .129 | |
-| 9 | Wireless-to-wired ping (same VLAN) | Tablet PC0 (CS) | PC2 or Printer2 | Success | |
-| 10 | Wireless-to-wired ping (cross-VLAN) | Laptop1 (Finance) | PC0 (Admin) | Success | |
-| 11 | Wireless-to-wireless ping (cross-VLAN) | Smartphone0 (Admin) | Tablet PC0 (CS) | Success | |
+| 6 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.2-62, gateway .1 | Success |
+| 7 | Wireless DHCP lease | Laptop1 (Finance) | not applicable | Address in 192.168.1.66-126, gateway .65 | Success |
+| 8 | Wireless-to-wired ping | Tablet PC0 (CS) | not applicable | Address in 192.168.1.130-190, gateway .129 | Success |
+| 9 | Wireless-to-wired ping (same VLAN) | Tablet PC0 (CS) | PC2 or Printer2 | Success | Success |
+| 10 | Wireless-to-wired ping (cross-VLAN) | Laptop1 (Finance) | PC0 (Admin) | Success | Success |
+| 11 | Wireless-to-wireless ping (cross-VLAN) | Smartphone0 (Admin) | Tablet PC0 (CS) | Success | Success |
 | 12 | Cross-VLAN traceroute | PC0 (Admin) | PC2 (CS) | Path routes through 192.168.1.1 | Success |
 
-## 8. Key Learnings
-
-- Router-on-a-stick requires the subinterface encapsulation VLAN ID to
-  exactly match the VLAN tag the switch sends over the trunk — a mismatch
-  here silently breaks inter-VLAN routing with no error message.
-- Subnetting a /24 into three /26s made VLAN and DHCP scoping simple, but in
-  a real deployment I'd size subnets closer to actual headcount per
-  department rather than splitting evenly, to avoid wasting address space.
-- Trunk ports must be configured on *both* the switch-to-router link; forgetting
-  this on either end leaves VLANs unable to reach the router at all.
-- Wireless client behavior in Packet Tracer (SSID, security mode, VLAN
-  mapping via the access port) mirrors real AP configuration closely enough
-  to be a genuinely useful proxy for hands-on wireless setup.
-
----
-
-## 9. Summary
-
-This project implements a segmented SOHO network for XYZ company's Bonalbo
-branch, meeting all seven requirements from the case study: a single Cisco
-router and switch form the core infrastructure; three departments (Admin/IT,
-Finance/HR, CS/Reception) are isolated into separate VLANs with independent
-/26 subnets; router-on-a-stick provides inter-VLAN routing so departments can
-communicate despite the isolation; the router's DHCP server automatically
-assigns addresses to all hosts; and each department has its own wireless
-network via a dedicated access point. Testing via same-VLAN and cross-VLAN
-pings, wireless DHCP leases, and a cross-VLAN traceroute confirms the design
-works as intended.
-
----
