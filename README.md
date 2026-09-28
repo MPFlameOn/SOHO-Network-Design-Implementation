@@ -201,12 +201,12 @@ while remaining logically separated by VLAN.
 | 1 | Same-VLAN ping | PC0 (Admin) | Printer0 (Admin) | Success | Success |
 | 2 | Same-VLAN ping | PC1 (Finance) | Printer1 (Finance) | Success | Success |
 | 3 | Cross-VLAN ping | PC0 (Admin) | PC1 (Finance) | Success (via router-on-a-stick) | Success |
-| 4 | Cross-VLAN ping | PC2 (CS/Reception) | PC1 (Finance) | Success | |
+| 4 | Cross-VLAN ping | PC2 (CS/Reception) | PC1 (Finance) | Success | Success |
 | 5 | Cross-VLAN ping | PC0 (Admin) | PC2 (CS/Reception) | Success | |
 | 6 | Wireless DHCP lease | Laptop0 (Admin, wireless) | — | Obtains 192.168.1.x address | |
 | 7 | Wireless DHCP lease | Smartphone1 (Finance, wireless) | — | Obtains 192.168.1.64–126 address | |
 | 8 | Wireless-to-wired ping | Smartphone2 (CS, wireless) | PC2 (CS, wired) | Success (same VLAN) | |
-| 9 | Cross-VLAN traceroute | PC0 (Admin) | PC2 (CS/Reception) | Path routes through 192.168.1.1 | |
+| 9 | Cross-VLAN traceroute | PC0 (Admin) | PC2 (CS/Reception) | Path routes through 192.168.1.1 | Success |
 
 ## 8. Key Learnings
 
