@@ -211,7 +211,7 @@ while remaining logically separated by VLAN.
 
 ---
 
-## 8. DHCP Hardening — Excluded Addresses
+## 8. DHCP Hardening — Excluded Addresses & Static Printers
 
 Gateway addresses (.1, .65, .129) initially sat inside their own DHCP pools,
 meaning the server could theoretically hand one out to a client. Excluded a
@@ -225,9 +225,17 @@ Router(config)#ip dhcp excluded-address 192.168.1.1 192.168.1.10
 Router(config)#ip dhcp excluded-address 192.168.1.65 192.168.1.74
 Router(config)#ip dhcp excluded-address 192.168.1.129 192.168.1.138
 Router(config)#exit
-Router#clear ip dhcp binding *
 Router#wr
 ```
+
+Printers were then moved from DHCP to static addressing within their
+department's excluded range:
+
+| Device | Static IP | Mask | Gateway |
+|---|---|---|---|
+| Printer0 | 192.168.1.2 | 255.255.255.192 | 192.168.1.1 |
+| Printer1 | 192.168.1.66 | 255.255.255.192 | 192.168.1.65 |
+| Printer2 | 192.168.1.130 | 255.255.255.192 | 192.168.1.129 |
 
 ## 9. Trunk Restriction
 
@@ -243,8 +251,6 @@ Switch(config-if)#switchport trunk allowed vlan 10,20,30
 Switch(config-if)#do wr
 ```
 
-![Trunk Restriction](screenshots/showinterfacestrunk.png)
-
 ## 10. Regression Test (Post-Hardening)
 
 Sections 8 and 9 changed live configuration after the original test suite in
@@ -252,49 +258,135 @@ Section 7 passed, so a subset of tests were rerun to confirm nothing broke.
 
 | # | Test | From | To | Expected Result | Actual Result |
 |---|---|---|---|---|---|
-| R1 | Same-VLAN ping | PC0 (Admin) | Printer0 (Admin, now static) | Success | *[PASTE]* |
-| R2 | Cross-VLAN ping | PC0 (Admin) | PC1 (Finance) | Success | *[PASTE]* |
-| R3 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.11-62, gateway .1 (range shifted after exclusion) | *[PASTE]* |
-
-*[If anything failed here, document the symptom, the command used to
-diagnose it, and the fix in a Troubleshooting Log section.]*
+| R1 | Same-VLAN ping | PC0 (Admin) | Printer0 (Admin) | Success | Success |
+| R2 | Cross-VLAN ping | PC0 (Admin) | PC1 (Finance) | Success | Success |
+| R3 | Wireless DHCP lease | Smartphone0 (Admin) | not applicable | Address in 192.168.1.11-62, gateway .1 (range shifted after exclusion) | Success |
 
 ## 11. Verification Commands
 
 Command output confirming the final running state of the switch and router,
 captured after the changes in Sections 8 and 9.
 
-| Device | Command | What to notice |
-|---|---|---|
-| Switch | `show vlan brief` | Ports assigned to the correct VLANs; Fa0/1 does not appear in any VLAN's port list because it's a trunk |
-| Switch | `show interfaces trunk` | Fa0/1 trunking, allowed VLANs limited to 10,20,30 |
-| Router | `show ip interface brief` | All three subinterfaces up/up with the correct gateway addresses |
-| Router | `show ip dhcp binding` | Wired and wireless clients leased from the correct pool, gateway/static range excluded |
-| Router | `show ip dhcp pool` | Excluded address ranges reflected per pool |
-| Router | `show ip route` | Three connected (C) and local (L) routes — no static routes needed for inter-VLAN routing |
+```
+Switch>show vlan brief
 
-```
-*[PASTE: show vlan brief]*
-```
-
-```
-*[PASTE: show interfaces trunk]*
-```
-
-```
-*[PASTE: show ip interface brief]*
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/11, Fa0/12, Fa0/13, Fa0/14
+                                                Fa0/15, Fa0/16, Fa0/17, Fa0/18
+                                                Fa0/19, Fa0/20, Fa0/21, Fa0/22
+                                                Fa0/23, Fa0/24, Gig0/1, Gig0/2
+10   VLAN0010                         active    Fa0/2, Fa0/3, Fa0/4
+20   VLAN0020                         active    Fa0/5, Fa0/6, Fa0/7
+30   VLAN0030                         active    Fa0/8, Fa0/9, Fa0/10
+1002 fddi-default                     active    
+1003 token-ring-default               active    
+1004 fddinet-default                  active    
+1005 trnet-default                    active
 ```
 
 ```
-*[PASTE: show ip dhcp binding]*
+Switch>show interfaces trunk
+Port        Mode         Encapsulation  Status        Native vlan
+Fa0/1       on           802.1q         trunking      1
+
+Port        Vlans allowed on trunk
+Fa0/1       10,20,30
+
+Port        Vlans allowed and active in management domain
+Fa0/1       10,20,30
+
+Port        Vlans in spanning tree forwarding state and not pruned
+Fa0/1       10,20,30
 ```
 
 ```
-*[PASTE: show ip dhcp pool]*
+Router>show ip interface brief
+Interface              IP-Address      OK? Method Status                Protocol 
+GigabitEthernet0/0     unassigned      YES unset  up                    up 
+GigabitEthernet0/0.10  192.168.1.1     YES manual up                    up 
+GigabitEthernet0/0.20  192.168.1.65    YES manual up                    up 
+GigabitEthernet0/0.30  192.168.1.129   YES manual up                    up 
+GigabitEthernet0/1     unassigned      YES unset  administratively down down 
+GigabitEthernet0/2     unassigned      YES unset  administratively down down 
+Vlan1                  unassigned      YES unset  administratively down down
 ```
 
 ```
-*[PASTE: show ip route]*
+Router>show ip dhcp binding
+IP address       Client-ID/              Lease expiration        Type
+                 Hardware address
+192.168.1.12     00D0.D3AE.ABCB           --                     Automatic
+192.168.1.11     0002.173C.950D           --                     Automatic
+192.168.1.13     00E0.F734.4A35           --                     Automatic
+192.168.1.76     0003.E489.70D8           --                     Automatic
+192.168.1.77     0060.2F08.0AB0           --                     Automatic
+192.168.1.78     0030.F2B8.DE63           --                     Automatic
+192.168.1.139    0060.3E30.0EE4           --                     Automatic
+192.168.1.141    0001.635E.EAD2           --                     Automatic
+192.168.1.143    0001.9789.B7D7           --                     Automatic
+192.168.1.142    0001.C9C5.33A8           --                     Automatic
+```
+
+```
+Router>show ip dhcp pool 
+
+Pool Admin-Pool :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 3
+ Excluded addresses             : 3
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.1          192.168.1.1      - 192.168.1.62      3    / 3     / 62
+
+Pool Finance-Pool :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 3
+ Excluded addresses             : 3
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.65         192.168.1.65     - 192.168.1.126     3    / 3     / 62
+
+Pool CS.com :
+ Utilization mark (high/low)    : 100 / 0
+ Subnet size (first/next)       : 0 / 0 
+ Total addresses                : 62
+ Leased addresses               : 4
+ Excluded addresses             : 3
+ Pending event                  : none
+
+ 1 subnet is currently in the pool
+ Current index        IP address range                    Leased/Excluded/Total
+ 192.168.1.129        192.168.1.129    - 192.168.1.190     4    / 3     / 62
+```
+
+```
+Router>show ip route
+Codes: L - local, C - connected, S - static, R - RIP, M - mobile, B - BGP
+       D - EIGRP, EX - EIGRP external, O - OSPF, IA - OSPF inter area
+       N1 - OSPF NSSA external type 1, N2 - OSPF NSSA external type 2
+       E1 - OSPF external type 1, E2 - OSPF external type 2, E - EGP
+       i - IS-IS, L1 - IS-IS level-1, L2 - IS-IS level-2, ia - IS-IS inter area
+       * - candidate default, U - per-user static route, o - ODR
+       P - periodic downloaded static route
+
+Gateway of last resort is not set
+
+     192.168.1.0/24 is variably subnetted, 6 subnets, 2 masks
+C       192.168.1.0/26 is directly connected, GigabitEthernet0/0.10
+L       192.168.1.1/32 is directly connected, GigabitEthernet0/0.10
+C       192.168.1.64/26 is directly connected, GigabitEthernet0/0.20
+L       192.168.1.65/32 is directly connected, GigabitEthernet0/0.20
+C       192.168.1.128/26 is directly connected, GigabitEthernet0/0.30
+L       192.168.1.129/32 is directly connected, GigabitEthernet0/0.30
 ```
 
 ## 12. Port & Cabling Reference
