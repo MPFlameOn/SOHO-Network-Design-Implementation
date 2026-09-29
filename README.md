@@ -398,16 +398,13 @@ switch–printer, switch–AP); no crossover cabling was required.
 | Switch Port | Connected Device | Device Port | VLAN | Mode | Cable |
 |---|---|---|---|---|---|
 | Fa0/1 | Router0 | Gi0/0 | 10,20,30 | Trunk | Copper straight-through |
-| Fa0/2 | *[fill in]* | | 10 | Access | Copper straight-through |
-| Fa0/3 | *[fill in]* | | 10 | Access | Copper straight-through |
-| Fa0/4 | *[fill in]* | | 10 | Access | Copper straight-through |
-| Fa0/5 | *[fill in]* | | 20 | Access | Copper straight-through |
-| Fa0/6 | *[fill in]* | | 20 | Access | Copper straight-through |
-| Fa0/7 | *[fill in]* | | 20 | Access | Copper straight-through |
-| Fa0/8 | *[fill in]* | | 30 | Access | Copper straight-through |
-| Fa0/9 | *[fill in]* | | 30 | Access | Copper straight-through |
-| Fa0/10 | *[fill in]* | | 30 | Access | Copper straight-through |
-
-*[Verify against `show interfaces status` or by hovering over each link in
-Packet Tracer, then fill in the Connected Device column above.]*
+| Fa0/2 | Access Point0 | | 10 | Access | Copper straight-through |
+| Fa0/3 | Printer0 | | 10 | Access | Copper straight-through |
+| Fa0/4 | PC0 | Fa0 | 10 | Access | Copper straight-through |
+| Fa0/5 | Access Point1 | | 20 | Access | Copper straight-through |
+| Fa0/6 | PC1 | Fa0 | 20 | Access | Copper straight-through |
+| Fa0/7 | Printer1 | | 20 | Access | Copper straight-through |
+| Fa0/8 | PC2 | Fa0 | 30 | Access | Copper straight-through |
+| Fa0/9 | Access Point2 | | 30 | Access | Copper straight-through |
+| Fa0/10 | Printer2 | | 30 | Access | Copper straight-through |
 
