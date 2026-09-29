@@ -448,31 +448,3 @@ switch–printer, switch–AP); no crossover cabling was required.
   mapping via the access port) mirrors real AP configuration closely enough
   to be a genuinely useful proxy for hands-on wireless setup.
 
-## 14. Limitations & Future Work
-
-This design intentionally stays within the case study's scope (a single
-router and switch for one branch), so several things a production
-deployment would need are deliberately out of scope here:
-
-- **Single point of failure.** One router and one switch means any hardware
-  failure takes the whole branch offline. A production design would add
-  redundant links and devices, such as HSRP/VRRP on the routing side and a
-  second switch with EtherChannel.
-- **No spanning tree discussion.** With a single switch, STP has nothing to
-  do in this topology, but the natural next step would be adding a second
-  switch and documenting how STP prevents loops across the new redundant
-  links.
-- **No DHCP snooping.** The current design trusts any device on the LAN
-  that requests an address. DHCP snooping would protect against a rogue
-  DHCP server being plugged into an access port.
-- **No NTP or centralized logging.** Timestamps on the router and switch
-  aren't synchronized, and there's no syslog server, both of which would
-  matter for real troubleshooting and auditing.
-- **No WAN/Internet edge.** The case study covers the LAN only, so there's
-  no uplink to an ISP, no NAT/PAT, and no default route out of the branch.
-- **Inter-VLAN access is fully open.** Every department can reach every
-  other, per the case study's requirement. A production version would
-  likely restrict some of that traffic (for example, Reception should not
-  need to reach Finance/HR) using extended ACLs on the router
-  subinterfaces.
-
