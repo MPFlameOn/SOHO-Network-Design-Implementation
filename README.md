@@ -211,7 +211,7 @@ while remaining logically separated by VLAN.
 
 ---
 
-## 8. DHCP Hardening — Excluded Addresses & Static Printers
+## 8. DHCP Hardening — Excluded Addresses
 
 Gateway addresses (.1, .65, .129) initially sat inside their own DHCP pools,
 meaning the server could theoretically hand one out to a client. Excluded a
@@ -229,22 +229,6 @@ Router#clear ip dhcp binding *
 Router#wr
 ```
 
-Printers were then moved from DHCP to static addressing within their
-department's excluded range:
-
-| Device | Static IP | Mask | Gateway |
-|---|---|---|---|
-| Printer0 | 192.168.1.2 | 255.255.255.192 | 192.168.1.1 |
-| Printer1 | 192.168.1.66 | 255.255.255.192 | 192.168.1.65 |
-| Printer2 | 192.168.1.130 | 255.255.255.192 | 192.168.1.129 |
-
-*[PASTE: `show ip dhcp pool` or `show running-config \| include excluded` output/screenshot here]*
-
-**Design note:** the case study requires hosts to obtain addresses
-automatically, but printers are infrastructure, not end-user hosts, so a
-static assignment inside a reserved block is standard practice and avoids
-address churn on a device that's rarely moved or replaced.
-
 ## 9. Trunk Restriction
 
 Restricted the switch-to-router trunk to only the VLANs actually in use,
@@ -261,6 +245,8 @@ Switch(config-if)#do wr
 
 *[PASTE: `show interfaces trunk` output/screenshot here, confirming Fa0/1 is
 trunking with allowed VLANs 10,20,30]*
+
+![Trunk Restriction](screenshots/showinterfacestrunk.png)
 
 ## 10. Regression Test (Post-Hardening)
 
