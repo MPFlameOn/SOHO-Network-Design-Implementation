@@ -1,7 +1,7 @@
 # SOHO Network Design & Implementation
 
-> **Summary:** A segmented SOHO branch network built in Cisco Packet Tracer
-> *(version: [fill in]*), using one Cisco 2911 router and one Cisco 2960
+> A segmented SOHO branch network built in Cisco Packet Tracer,
+> using one Cisco 2911 router and one Cisco 2960
 > switch. Demonstrates VLAN segmentation, router-on-a-stick inter-VLAN
 > routing, per-department DHCP scoping with excluded/static addressing,
 > trunk hardening, and wired, wireless, same-VLAN, and cross-VLAN
