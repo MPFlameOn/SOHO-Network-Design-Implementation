@@ -243,9 +243,6 @@ Switch(config-if)#switchport trunk allowed vlan 10,20,30
 Switch(config-if)#do wr
 ```
 
-*[PASTE: `show interfaces trunk` output/screenshot here, confirming Fa0/1 is
-trunking with allowed VLANs 10,20,30]*
-
 ![Trunk Restriction](screenshots/showinterfacestrunk.png)
 
 ## 10. Regression Test (Post-Hardening)
